@@ -1,43 +1,41 @@
-import { useState, useCallback } from "react";
-import QUESTIONS from "../Questions";
-import quizCompletedLogo from "../assets/quiz-complete.png"
-import Question from "./Question";
+import { useState, useCallback } from 'react';
 
-function Quiz() {
-    const [userAnswers, setUserAnswers ] = useState([]);
+import QUESTIONS from '../questions.js';
+import Question from './Question.jsx';
+import Summary from './Summary.jsx';
 
-    const activeQuestionIndex =  userAnswers.length;
-    const quizIsCompleted = activeQuestionIndex === QUESTIONS.length;
+export default function Quiz() {
+  const [userAnswers, setUserAnswers] = useState([]);
 
-    const handleSelectAnswer = useCallback(function handleSelectAnswer(selectedAnswer){
-        setUserAnswers(prevUserAnswers =>{
-            return [...prevUserAnswers, selectedAnswer]
-        });
-    }, [])
+  const activeQuestionIndex = userAnswers.length;
+  const quizIsComplete = activeQuestionIndex === QUESTIONS.length;
 
-    const handleSkipAnswer = useCallback(() => handleSelectAnswer(null), [handleSelectAnswer]) 
+  const handleSelectAnswer = useCallback(function handleSelectAnswer(
+    selectedAnswer
+  ) {
+    setUserAnswers((prevUserAnswers) => {
+      return [...prevUserAnswers, selectedAnswer];
+    });
+  },
+  []);
 
-    if(quizIsCompleted){
-        return (
-            <div id="summary">
-                <img src={quizCompletedLogo} alt="Trophy Icon" />
-                <h2>
-                    Quiz Completed!
-                </h2>
-            </div>
-        )
-    }
+  const handleSkipAnswer = useCallback(
+    () => handleSelectAnswer(null),
+    [handleSelectAnswer]
+  );
 
-    return (
-        <div id="quiz">
-            <Question 
-            key={activeQuestionIndex}
-            index={activeQuestionIndex}
-            onSelectAnswer={handleSelectAnswer}
-            onSkipAnswer={handleSkipAnswer}
-            />
-        </div>
-    );
+  if (quizIsComplete) {
+    return <Summary userAnswers={userAnswers} />
+  }
+
+  return (
+    <div id="quiz">
+      <Question
+        key={activeQuestionIndex}
+        index={activeQuestionIndex}
+        onSelectAnswer={handleSelectAnswer}
+        onSkipAnswer={handleSkipAnswer}
+      />
+    </div>
+  );
 }
-
-export default Quiz;
